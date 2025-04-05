@@ -1,4 +1,12 @@
 
+## Gymnastics of Golang
+
+<div style="display: flex; align-items: center;">
+  <img src="pic/gymnastics-1.jpg" alt="Gymnastics" width="500">
+  <div style="margin-left: 10px;">
+  maki is accumulating Golang patterns or just patterns in Golang I've encountered along the way here
+  </div>
+</div>
 
 ### Simple Patterns of Golang
 
