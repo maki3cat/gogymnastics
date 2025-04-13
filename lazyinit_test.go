@@ -12,7 +12,7 @@ func TestGetConnectionTwice(t *testing.T) {
 	nodeID := "node2"
 
 	// Test the connection establishment
-	conn, err := GetConnection(nodeID)
+	conn, err := connManager.GetConnection(nodeID)
 	if err != nil {
 		t.Fatalf("Failed to establish connection: %v", err)
 	}
@@ -21,7 +21,7 @@ func TestGetConnectionTwice(t *testing.T) {
 	}
 
 	// Test the GetConnection function
-	conn, err = GetConnection(nodeID)
+	conn, err = connManager.GetConnection(nodeID)
 	if err != nil {
 		t.Fatalf("Failed to get connection: %v", err)
 	}
@@ -38,7 +38,7 @@ func TestParallelGetConnection(t *testing.T) {
 	var wg sync.WaitGroup
 	getConn := func(threadID int) {
 		defer wg.Done()
-		GetConnection(nodeID)
+		connManager.GetConnection(nodeID)
 		fmt.Printf("thread %d: get the connection to %s\n", threadID, nodeID)
 	}
 	for i := range 10 {
