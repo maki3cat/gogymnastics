@@ -1,8 +1,12 @@
 
 ## Gymnastics of Golang
 
- maki is accumulating patterns and tricks in Golang I've encountered along the way here ~
- my Golang vault ~
+I am accumulating small but not-too-simple patterns and tricks in Golang while implementing RAFT in Go myself (the mkRaft project)~
+
+Hope you like it, and if you like it I hope I can get a star! :star2: :star:
+
+I :heart: Golang and I hope after this project I can start my RustGymnastics soon (:
+
 
 <img src="pic/gymnastics-1.jpg" alt="My Image" align="right" width="350">
 
