@@ -47,6 +47,7 @@ I :heart: Golang and I hope after this project I can start my RustGymnastics soo
 
 <img src="pic/gymnastics-2.jpg" alt="My Image" align="left" width="300">
 
+- [Special Control Flow of Golang: defer, panic, recover](https://go.dev/blog/defer-panic-and-recover)
 - [Rob Pike's magic with Go channels](https://go.dev/talks/2012/concurrency.slide#20)
 - [Go Blog: Concurrency Patterns, Fan-in/out, Pipeline, Cancellation](https://go.dev/blog/pipelines)
 - [Go Blog: Memory Model](https://go.dev/ref/mem)
