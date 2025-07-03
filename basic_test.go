@@ -1,4 +1,4 @@
-package main
+package gogymnastics
 
 import (
 	"fmt"
@@ -27,12 +27,17 @@ func fanInOutV2(n int) {
 		go func(i int) {
 			defer wg.Done()
 			msg := fmt.Sprintf("this is number %d", i)
-			basicUnit(msg)
+			basicUnitV2(msg)
 		}(i)
 	}
 
 	wg.Wait() // this is your "fan-in" — blocks until all are done
 	fmt.Println("finished all units")
+}
+
+func basicUnitV2(msg string) {
+	time.Sleep(time.Millisecond * 100)
+	fmt.Println(msg)
 }
 
 func basicUnit(msg string, res chan struct{}) {
