@@ -24,13 +24,13 @@ import (
 func panic_with_recover(ctx context.Context) {
 	go func() {
 		defer func() {
-			if err := recover(); err != nil {
-				fmt.Println("recovered")
+			if val := recover(); val != nil {
+				fmt.Println(fmt.Sprintf("recovered and got value %v", val))
 			}
 		}()
 		time.Sleep(time.Microsecond * 100)
 		fmt.Println("sub gorotine starts")
-		panic("sub goroutine panicks")
+		panic(19983420)
 	}()
 }
 
