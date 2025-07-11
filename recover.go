@@ -34,9 +34,9 @@ func panic_with_recover(ctx context.Context) {
 	}()
 }
 
-func main() {
-	panic_with_recover(context.Background())
-	time.Sleep(time.Second)
-	fmt.Println("main is still running")
-	fmt.Println("main exits")
-}
+// func main() {
+// 	panic_with_recover(context.Background())
+// 	time.Sleep(time.Second)
+// 	fmt.Println("main is still running")
+// 	fmt.Println("main exits")
+// }

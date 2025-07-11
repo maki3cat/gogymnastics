@@ -19,7 +19,7 @@ func demo() int {
 	return 7
 }
 
-func main() {
-	fmt.Println(demo())
-	fmt.Println(demoV2())
-}
+// func main() {
+// 	fmt.Println(demo())
+// 	fmt.Println(demoV2())
+// }

@@ -2,14 +2,9 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 )
-
-func try_error() error {
-	return errors.New()
-}
 
 func panic_in_subgoroutine(ctx context.Context) {
 	go func() {
