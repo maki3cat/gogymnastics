@@ -1,4 +1,4 @@
-package gogymnastics
+package main
 
 import (
 	"context"
@@ -26,18 +26,26 @@ func heartbeatServer(ctx context.Context, inbound <-chan string) {
 			ticker.Stop()
 			fmt.Println("stopping on context cancellation")
 			return
-		case t := <-ticker.C:
-			fmt.Println("Heartbeat action performed at ", t)
-			time.Sleep(100 * time.Millisecond) // Simulate async rpc time
-		case msg, ok := <-inbound:
-			if !ok {
-				fmt.Println("stopping on inbound channel closed")
-				return
+		default:
+			{
+				select {
+				case <-ctx.Done():
+					ticker.Stop()
+					fmt.Println("stopping on context cancellation")
+				case t := <-ticker.C:
+					fmt.Println("Heartbeat action performed at ", t)
+					time.Sleep(100 * time.Millisecond) // Simulate async rpc time
+				case msg, ok := <-inbound:
+					if !ok {
+						fmt.Println("stopping on inbound channel closed")
+						return
+					}
+					ticker.Stop()
+					fmt.Println("Connection maintained by Message: ", msg, " at ", time.Now())
+					time.Sleep(100 * time.Millisecond) // Simulate async rpc time
+					ticker.Reset(1 * time.Second)      // Reset the ticker after processing a message
+				}
 			}
-			ticker.Stop()
-			fmt.Println("Connection maintained by Message: ", msg, " at ", time.Now())
-			time.Sleep(100 * time.Millisecond) // Simulate async rpc time
-			ticker.Reset(1 * time.Second)      // Reset the ticker after processing a message
 		}
 	}
 }

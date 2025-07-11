@@ -1,4 +1,4 @@
-package gogymnastics
+package main
 
 import (
 	"fmt"
