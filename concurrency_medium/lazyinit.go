@@ -1,4 +1,4 @@
-package main
+package concurrency_medium
 
 import (
 	"fmt"

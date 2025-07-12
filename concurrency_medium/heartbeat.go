@@ -1,4 +1,4 @@
-package main
+package concurrency_medium
 
 import (
 	"context"
@@ -40,10 +40,11 @@ func heartbeatServer(ctx context.Context, inbound <-chan string) {
 						fmt.Println("stopping on inbound channel closed")
 						return
 					}
-					ticker.Stop()
-					fmt.Println("Connection maintained by Message: ", msg, " at ", time.Now())
-					time.Sleep(100 * time.Millisecond) // Simulate async rpc time
-					ticker.Reset(1 * time.Second)      // Reset the ticker after processing a message
+					ticker.Reset(1 * time.Second) // Reset the ticker after processing a message
+					go func() {
+						time.Sleep(100 * time.Millisecond) // Simulate async rpc time
+						fmt.Println("Connection maintained by Message: ", msg, " at ", time.Now())
+					}()
 				}
 			}
 		}
