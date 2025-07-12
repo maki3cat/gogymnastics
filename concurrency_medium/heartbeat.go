@@ -18,7 +18,8 @@ import (
 // However, when a request is received,
 // the heartbeat is not needed, as the incoming request itself can be used to maintain the connection.
 func heartbeatServer(ctx context.Context, inbound <-chan string) {
-	ticker := time.NewTicker(1 * time.Second)
+	tickerGap := 100 * time.Millisecond
+	ticker := time.NewTicker(tickerGap)
 	defer ticker.Stop() // clean up on unexpected exit
 	for {
 		select {
@@ -32,18 +33,17 @@ func heartbeatServer(ctx context.Context, inbound <-chan string) {
 				case <-ctx.Done():
 					ticker.Stop()
 					fmt.Println("stopping on context cancellation")
-				case t := <-ticker.C:
-					fmt.Println("Heartbeat action performed at ", t)
-					time.Sleep(100 * time.Millisecond) // Simulate async rpc time
+					return
+				case <-ticker.C:
+					fmt.Println("Heartbeat action performed at ", time.Now().UnixNano()/1000_000)
 				case msg, ok := <-inbound:
 					if !ok {
 						fmt.Println("stopping on inbound channel closed")
 						return
 					}
-					ticker.Reset(1 * time.Second) // Reset the ticker after processing a message
+					ticker.Reset(tickerGap) // Reset the ticker after processing a message
 					go func() {
-						time.Sleep(100 * time.Millisecond) // Simulate async rpc time
-						fmt.Println("Connection maintained by Message: ", msg, " at ", time.Now())
+						fmt.Println("async handle some request: ", msg, " at ", time.Now().UnixNano()/1000_000)
 					}()
 				}
 			}

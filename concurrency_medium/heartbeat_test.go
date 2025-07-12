@@ -17,9 +17,9 @@ func TestHeartbeat(t *testing.T) {
 
 	// Simulate inbound requests
 	go func() {
-		for i := range 10 {
+		for i := range 5 {
 			inbound <- fmt.Sprintf("Message %d", i)
-			gap := rand.Intn(3000)
+			gap := rand.Intn(500)
 			time.Sleep(time.Duration(gap) * time.Millisecond)
 		}
 		// maki:
@@ -29,7 +29,7 @@ func TestHeartbeat(t *testing.T) {
 		// close(inbound) -> cannot do this
 	}()
 
-	time.Sleep(1 * time.Minute)
+	time.Sleep(3 * time.Second)
 	cancel()
 	time.Sleep(2 * time.Second)
 	fmt.Println("Main function exiting")
