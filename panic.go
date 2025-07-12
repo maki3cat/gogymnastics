@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"time"
 )
 
 func panic_in_subgoroutine(ctx context.Context) {
@@ -13,8 +12,8 @@ func panic_in_subgoroutine(ctx context.Context) {
 	}()
 }
 
-func main() {
-	panic_in_subgoroutine(context.Background())
-	time.Sleep(time.Second)
-	fmt.Println("main is still running")
-}
+// func main() {
+// 	panic_in_subgoroutine(context.Background())
+// 	time.Sleep(time.Second)
+// 	fmt.Println("main is still running")
+// }
