@@ -4,6 +4,8 @@ import (
 	"context"
 )
 
+// pattern: or channels
+// use case, one return is needed from all channels
 func OrChn(ctx context.Context, chans ...<-chan any) <-chan any {
 
 	if len(chans) == 0 {
