@@ -1,7 +1,5 @@
 package concurrency
 
-import "fmt"
-
 type Sem struct {
 	n int
 	c chan struct{}
@@ -33,20 +31,4 @@ func (n *Sem) Acquire() {
 
 func (n *Sem) Release() {
 	n.c <- struct{}{}
-}
-
-func main() {
-	sem := NewSem(2)
-
-	sem.Acquire()
-	fmt.Println("Got 1")
-
-	sem.Acquire()
-	fmt.Println("Got 2")
-
-	// Would block here
-	// sem.Acquire()
-
-	sem.Release()
-	fmt.Println("Released 1")
 }
