@@ -6,6 +6,8 @@ import (
 
 // pattern: or channels
 // use case, one return is needed from all channels
+// base cases: no chn, and one chan
+// recursive case: > 1 chan
 func OrChn(ctx context.Context, chans ...<-chan any) <-chan any {
 
 	if len(chans) == 0 {

@@ -2,6 +2,7 @@ package concurrency
 
 import "context"
 
+// teechn: split a channel into two channels
 func TeeChn(ctx context.Context, ch <-chan any) (<-chan any, <-chan any) {
 	out1, out2 := make(chan any), make(chan any)
 	go func() {
@@ -18,6 +19,7 @@ func TeeChn(ctx context.Context, ch <-chan any) (<-chan any, <-chan any) {
 					case <-ctx.Done():
 						return
 					case tmp1 <- v:
+						// maki: this is a very interesting line
 						tmp1 = nil
 					case tmp2 <- v:
 						tmp2 = nil

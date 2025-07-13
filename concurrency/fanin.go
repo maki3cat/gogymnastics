@@ -1,12 +1,13 @@
 package concurrency
 
 import (
-	"context"
 	"sync"
 )
 
-// fan-in requires len(chns)+1 goroutines
-func FanIn(ctx context.Context, chs ...<-chan any) <-chan any {
+// fan-in: base case, no chn, and one chn
+// fan-in normal cases:requires len(chns)+1 goroutines
+// chns should be closed by the caller when they are done
+func FanIn(chs ...<-chan any) <-chan any {
 	// base cases
 	if len(chs) == 0 {
 		return nil

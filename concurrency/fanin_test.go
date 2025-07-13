@@ -1,7 +1,6 @@
 package concurrency
 
 import (
-	"context"
 	"testing"
 )
 
@@ -22,7 +21,7 @@ func TestFanIn(t *testing.T) {
 		}()
 
 		// Fan in the channels
-		merged := FanIn(context.Background(), ch1, ch2, ch3)
+		merged := FanIn(ch1, ch2, ch3)
 
 		// Collect results
 		results := make([]int, 0, 3)
@@ -52,7 +51,7 @@ func TestFanIn(t *testing.T) {
 	})
 
 	t.Run("empty channels list", func(t *testing.T) {
-		result := FanIn(context.Background())
+		result := FanIn()
 		if result != nil {
 			t.Error("Expected nil channel for empty input")
 		}
@@ -65,7 +64,7 @@ func TestFanIn(t *testing.T) {
 			close(ch)
 		}()
 
-		result := FanIn(context.Background(), ch)
+		result := FanIn(ch)
 		val := <-result
 		if v, ok := val.(int); !ok || v != 42 {
 			t.Errorf("Expected 42, got %v", val)

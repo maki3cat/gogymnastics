@@ -3,9 +3,9 @@ package concurrency
 import "context"
 
 // maki:
-// I think in the pipeline pattern,
+// the pipeline pattern, and the fan-in pattern are very similar
 // closing the channel is a good practice
-
+// basic idea: in-chan, out-chan
 func add(ctx context.Context, in <-chan int) <-chan int {
 	out := make(chan int)
 	go func() {
