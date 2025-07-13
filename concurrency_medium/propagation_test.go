@@ -23,3 +23,8 @@ func TestWithLayers(t *testing.T) {
 	}()
 	CancelWithLayers(ctx)
 }
+
+func TestTimeoutCancellation(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+	CancelWithSameContext(ctx)
+}
