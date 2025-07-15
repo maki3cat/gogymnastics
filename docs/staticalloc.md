@@ -26,7 +26,7 @@ So we cannot use slice to manage static allocation in which only the descriptor 
 
 ### Check It
 In the following snippet, the global data addr should be consistent.
-But ASLR impacts virtual address, but we can use "go tool nm|grep global" to find the global variables.
+But on my MacOS the virtual addresses are randomized (seems to be fine on linux without PIE/ASLR in place), but still, we can use "go tool nm|grep global" to find the global variables.
 See [extreme/staticalloc](https://github.com/maki3cat/gogymnastics/tree/main/extreme/staticalloc) for the code and test script.  
 To try it yourself, run `bash test.sh` in that directory.
 
