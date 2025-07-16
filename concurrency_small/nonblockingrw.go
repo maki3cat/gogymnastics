@@ -13,7 +13,6 @@ func dosomething_once_nonblocking(c chan<- struct{}) {
 		fmt.Println("sent 1")
 	default:
 		fmt.Println("channel is full, exit")
-		return
 	}
 }
 
