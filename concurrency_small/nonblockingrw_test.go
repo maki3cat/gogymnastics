@@ -7,7 +7,7 @@ import (
 )
 
 func TestNonblocking_Pass(t *testing.T) {
-	ch := make(chan struct{}, 0)
+	ch := make(chan struct{})
 	dosomething_once_nonblocking(ch)
 }
 
