@@ -12,7 +12,7 @@ type Task struct {
 	callback chan struct{}
 }
 
-// taskHeap implements heap.Interface and holds tasks.
+// a min-heap of tasks
 type taskHeap []Task
 
 func (h taskHeap) Len() int           { return len(h) }
@@ -24,6 +24,7 @@ func (h *taskHeap) Push(x interface{}) {
 }
 
 func (h *taskHeap) Pop() interface{} {
+	// here h is pointer to the slice of the taskHeap
 	old := *h
 	n := len(old)
 	x := old[n-1]
