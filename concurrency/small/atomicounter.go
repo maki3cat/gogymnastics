@@ -22,3 +22,9 @@ func AtomicCounter(ctx context.Context, threadCnt int, perThread int) int {
 	wg.Wait()
 	return int(ans.Load())
 }
+
+// func AtomicSwap() {
+// 	ab := atomic.Bool{}
+// 	ab.Store(true)
+// 	ab.CompareAndSwap(true, false)
+// }
