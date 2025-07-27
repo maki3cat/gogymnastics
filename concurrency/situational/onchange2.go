@@ -3,6 +3,7 @@ package situational
 import (
 	"context"
 	"sync"
+	"time"
 )
 
 // in this version, we use channel to notify the apply worker to wake up
@@ -27,6 +28,7 @@ func (s *RaftState2) GetAppliedIdx() int {
 	defer s.lock.Unlock()
 	return s.appliedIdx
 }
+
 func (s *RaftState2) GetCommittedIdx() int {
 	s.lock.Lock()
 	defer s.lock.Unlock()
@@ -37,6 +39,7 @@ func (s *RaftState2) SetCommitIdx(idx int) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 	s.committedIdx = idx
+	// non-blockingly send a signal, especially useful when we only need one signal and do batching
 	// use the signal only for notificaiton than the real idx
 	select {
 	case s.updatedSignal <- idx:
@@ -44,17 +47,22 @@ func (s *RaftState2) SetCommitIdx(idx int) {
 	}
 }
 
+// should be called in a separate goroutine
 func (s *RaftState2) StartApplyWorker(ctx context.Context) {
 	for {
 		select {
 		case <-ctx.Done():
+			// todo: cleanup
 			return
 		default:
 			select {
 			case <-ctx.Done():
+				// todo: cleanup
 				return
-			case idx := <-s.updatedSignal:
-				s.appliedIdx = idx
+			case <-s.updatedSignal:
+				// simpliy the apply as commited idx
+				time.Sleep(500 * time.Millisecond)
+				s.appliedIdx = s.committedIdx
 			}
 		}
 	}
