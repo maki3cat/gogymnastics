@@ -47,6 +47,12 @@ func (s *RaftState2) SetCommitIdx(idx int) {
 	}
 }
 
+func (s *RaftState2) SetAppliedIdx(idx int) {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+	s.appliedIdx = idx
+}
+
 // should be called in a separate goroutine
 func (s *RaftState2) StartApplyWorker(ctx context.Context) {
 	for {
@@ -62,7 +68,7 @@ func (s *RaftState2) StartApplyWorker(ctx context.Context) {
 			case <-s.updatedSignal:
 				// simpliy the apply as commited idx
 				time.Sleep(500 * time.Millisecond)
-				s.appliedIdx = s.committedIdx
+				s.SetAppliedIdx(s.committedIdx)
 			}
 		}
 	}
