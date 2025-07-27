@@ -1,4 +1,4 @@
-package situational
+package onchange
 
 import (
 	"context"
@@ -83,4 +83,3 @@ func TestOnChange2_BatchedSignal(t *testing.T) {
 	assert.Equal(t, 5, raftState.GetAppliedIdx())
 	assert.Equal(t, 5, raftState.GetCommittedIdx())
 }
-
