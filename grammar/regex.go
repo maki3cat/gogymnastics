@@ -35,12 +35,20 @@ var logLines = []string{
 // /users/[0-9]+ -> /users/#
 // others, keep the original
 var (
-	usersLocationsRE = regexp.MustCompile(`/users/[0-9]+/locations`)
-	ridesStatusRE    = regexp.MustCompile(`/rides/[0-9]+/status`)
-	pricesGeoRE      = regexp.MustCompile(`/prices/[0-9]+/geo/[0-9]+`)
-	usersRideRE      = regexp.MustCompile(`/users/[0-9]+/ride/[0-9]+`)
-	usersRE          = regexp.MustCompile(`/users/[0-9]+`)
+	usersLocationsRE *regexp.Regexp
+	ridesStatusRE    *regexp.Regexp
+	pricesGeoRE      *regexp.Regexp
+	usersRideRE      *regexp.Regexp
+	usersRE          *regexp.Regexp
 )
+
+func init() {
+	usersLocationsRE = regexp.MustCompile(`/users/[0-9]+/locations`)
+	ridesStatusRE = regexp.MustCompile(`/rides/[0-9]+/status`)
+	pricesGeoRE = regexp.MustCompile(`/prices/[0-9]+/geo/[0-9]+`)
+	usersRideRE = regexp.MustCompile(`/users/[0-9]+/ride/[0-9]+`)
+	usersRE = regexp.MustCompile(`/users/[0-9]+`)
+}
 
 func extractPath(rawPath string) string {
 	if usersLocationsRE.MatchString(rawPath) {
