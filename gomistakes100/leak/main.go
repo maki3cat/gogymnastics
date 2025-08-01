@@ -1,5 +1,8 @@
 package main
 
+// copied from https://github.com/teivah/100-go-mistakes/blob/master/src/03-data-types/26-slice-memory-leak/slice-pointers/main.go
+// this is not my work, and I just want to do some experiments
+
 import (
 	"fmt"
 	"runtime"
