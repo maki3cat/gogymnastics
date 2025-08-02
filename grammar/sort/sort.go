@@ -1,4 +1,4 @@
-package grammar
+package sort
 
 type Person struct {
 	Name  string
