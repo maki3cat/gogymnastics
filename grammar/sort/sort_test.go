@@ -8,6 +8,22 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// built-in primitive types:
+// sort.Ints, sort.Strings, sort.Float64s, sort.Slice
+func TestSortInts(t *testing.T) {
+	x := []int{10, 21, 3, 4, 5}
+	sort.Ints(x)
+	assert.True(t, x[0] == 3)
+	fmt.Println(x)
+}
+
+func TestSortString(t *testing.T) {
+	x := []string{"a", "b", "c"}
+	sort.Strings(x)
+	assert.True(t, x[0] == "a")
+	fmt.Println(x)
+}
+
 var ps = []Person{
 	{Name: "a", Age: 10, Group: 1, Addr: ""},
 	{Name: "b", Age: 5, Group: 2, Addr: ""},
