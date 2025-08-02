@@ -44,8 +44,7 @@ func TestSortSlice2(t *testing.T) {
 // reusable method
 // sort.Sort is generic method where sort.Slice only works on a slice
 func TestSortSlice(t *testing.T) {
-	// warning:
-	// we need to change the slice of person to PersonSlice in order to use the sort.Sort function
+	// maki: we need to change the slice of person to PersonSlice in order to use the sort.Sort function
 	sort.Sort(PersonSlice(ps))
 	assert.True(t, ps[0].Age == 5)
 	fmt.Println(ps)

@@ -18,6 +18,7 @@ func isCtxDone(ctx context.Context) bool {
 	select {
 	case <-ctx.Done():
 		return true
+	// default is a very important keyword in select statement
 	default:
 		return false
 	}
