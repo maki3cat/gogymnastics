@@ -69,8 +69,7 @@ type PathCount struct {
 	Key   string
 }
 
-// from root
-func GetPathCount(root *Node) []PathCount {
+func CollectPathCount(root *Node) []PathCount {
 	names := make([]string, 0)
 	pathCounts := make([]PathCount, 0)
 	var dfs func(node *Node)
@@ -139,7 +138,8 @@ func Process(logs []string) {
 		}
 	}
 	fmt.Println("root node", root.Children)
-	pathCounts := GetPathCount(&root)
+	pathCounts := CollectPathCount(&root)
+
 	for _, pc := range pathCounts {
 		fmt.Println(pc.Path, pc.Count, pc.Key)
 	}
