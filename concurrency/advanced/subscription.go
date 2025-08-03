@@ -48,6 +48,7 @@ func Subscribe(fetcher Fetcher) Subscription {
 		fetcher:   fetcher,
 		updatesCh: make(chan Item), // for Updates
 		closeCh:   make(chan struct{}),
+		closingCh: make(chan chan error),
 	}
 	go s.loop()
 	return s
@@ -57,7 +58,11 @@ func Subscribe(fetcher Fetcher) Subscription {
 type sub struct {
 	fetcher   Fetcher   // fetches items
 	updatesCh chan Item // delivers items to the user
+
+	// maki: this is very important, we use channel instead of a value
+	// if we use close boolean there will be a synchronization bug
 	closeCh   chan struct{}
+	closingCh chan chan error
 }
 
 func (s *sub) Close() error {
