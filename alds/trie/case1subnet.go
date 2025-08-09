@@ -7,9 +7,9 @@ import (
 )
 
 //From the network layer, it is a common behavior to find the geographical location of a request from its source ip. Assuming you're designing a service to resolve the source location of a request, and you can build a map between ip subnets and geo locations like this:
-// 10.0.0.0/25 → cn
 // 15.0.0.0/24 → fr
-// 10.1.0.0/16 → sh
+// 10.0.0.0/16 → cn
+// 10.0.1.0/25 -> sh
 //here's a sample definition of the class
 //class Locator {
 // fun setGeoLocation(subnet: String, geo: String)
