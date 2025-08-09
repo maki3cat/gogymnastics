@@ -1,6 +1,9 @@
 package urlrouter
 
-import "strings"
+import (
+	"regexp"
+	"strings"
+)
 
 // // url path
 // basic case: precise matching
@@ -47,11 +50,17 @@ func (n *Node) AddMethod(method string, handler func()) {
 
 // ----------------build the trie----------------
 var urlRoot *Node = NewNode("") // dummy root
+var digitValue *regexp.Regexp = regexp.MustCompile(`^\d+$`)
+var digitRegister *regexp.Regexp = regexp.MustCompile(`^{(\w+)}$`)
+var digitPlaceholder = "#"
 
 func Register(path string, method string, handler func()) {
 	parts := strings.Split(path, "/")
 	node := urlRoot
 	for _, part := range parts {
+		if digitRegister.MatchString(part) {
+			part = digitPlaceholder
+		}
 		child := node.FindChild(part)
 		if child == nil {
 			child = node.AddChild(part)
@@ -61,7 +70,19 @@ func Register(path string, method string, handler func()) {
 	node.AddMethod(method, handler)
 }
 
-func Route(path string, method string) func() {
+func Route(path string, method string) (func(), bool) {
 	node := urlRoot
-
+	parts := strings.Split(path, "/")
+	for _, part := range parts {
+		if digitValue.MatchString(part) {
+			part = digitPlaceholder
+		}
+		child := node.FindChild(part)
+		if child == nil {
+			return nil, false // not found
+		}
+		node = child
+	}
+	handler, ok := node.Methods[method]
+	return handler, ok
 }
