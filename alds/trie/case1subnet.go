@@ -6,11 +6,11 @@ import (
 	"strings"
 )
 
-//From the network layer, it is a common behavior to find the geographical location of a request from its source ip. Assuming you’re designing a service to resolve the source location of a request, and you can build a map between ip subnets and geo locations like this:
+//From the network layer, it is a common behavior to find the geographical location of a request from its source ip. Assuming you're designing a service to resolve the source location of a request, and you can build a map between ip subnets and geo locations like this:
 // 10.0.0.0/25 → cn
 // 15.0.0.0/24 → fr
 // 10.1.0.0/16 → sh
-//here’s a sample definition of the class
+//here's a sample definition of the class
 //class Locator {
 // fun setGeoLocation(subnet: String, geo: String)
 // fun getGeoLocation(ip: String): String
@@ -26,6 +26,9 @@ func parseSubnet(subnet string) ([]byte, int, error) {
 	mask, err := strconv.Atoi(parts[1])
 	if err != nil {
 		return nil, 0, fmt.Errorf("invalid subnet: %w", err)
+	}
+	if mask < 0 || mask > 32 {
+		return nil, 0, fmt.Errorf("invalid subnet mask")
 	}
 	ipBytes, err := parseIp(parts[0])
 	if err != nil {
@@ -45,6 +48,9 @@ func parseIp(ipStr string) ([]byte, error) {
 		if err != nil {
 			return nil, fmt.Errorf("invalid ip: %w", err)
 		}
+		if val < 0 || val > 255 {
+			return nil, fmt.Errorf("invalid ip octet")
+		}
 		ipBytes[i] = byte(val)
 	}
 	return ipBytes, nil
@@ -53,6 +59,9 @@ func parseIp(ipStr string) ([]byte, error) {
 // @returns: the bit at the position
 func helperGetBit(ip []byte, pos int) bool {
 	// from left to right
+	if pos >= 32 {
+		return false
+	}
 	idx := pos / 8
 	bit := pos % 8
 	return (ip[idx] & (1 << (7 - bit))) != 0
@@ -75,7 +84,6 @@ func NewBitNode(bit bool) *BitNode {
 
 func (n *BitNode) AddChild(bit bool) *BitNode {
 	if _, ok := n.children[bit]; !ok {
-		fmt.Println("add child", bit)
 		n.children[bit] = NewBitNode(bit)
 	}
 	return n.children[bit]
@@ -102,16 +110,19 @@ func BuildTrie(root *BitNode, subnets []byte, maskLen int, value string) {
 // root is dummy, we don't use it
 func SearchTrie(root *BitNode, ip []byte) string {
 	node := root
-	for i := range len(ip) {
+	lastValue := ""
+	for i := range 32 {
 		bit := helperGetBit(ip, i)
-		fmt.Println(i, bit)
 		child := node.GetChild(bit)
 		if child == nil {
-			return ""
+			return lastValue
+		}
+		if child.value != "" {
+			lastValue = child.value
 		}
 		node = child
 	}
-	return node.value
+	return lastValue
 }
 
 // The functions
@@ -129,7 +140,7 @@ func SetGeo(subnet string, geo string) error {
 }
 
 func GetGeo(ip string) string {
-	ipBytes, _, err := parseSubnet(ip)
+	ipBytes, err := parseIp(ip)
 	if err != nil {
 		return ""
 	}
