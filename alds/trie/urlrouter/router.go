@@ -39,6 +39,10 @@ func (n *Node) FindChild(name string) *Node {
 	return n.Children[name]
 }
 
+func (n *Node) FindWildcardChild() *Node {
+	return n.Children["*"]
+}
+
 func (n *Node) AddChild(name string) *Node {
 	n.Children[name] = NewNode(name)
 	return n.Children[name]
@@ -79,7 +83,12 @@ func Route(path string, method string) (func(), bool) {
 		}
 		child := node.FindChild(part)
 		if child == nil {
-			return nil, false // not found
+			// try to find the wildcard child
+			wildcardChild := node.FindWildcardChild()
+			if wildcardChild == nil {
+				return nil, false // not found
+			}
+			child = wildcardChild
 		}
 		node = child
 	}

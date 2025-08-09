@@ -62,3 +62,31 @@ func TestRegister2(t *testing.T) {
 		t.Errorf("Route failed")
 	}
 }
+
+func TestRegister3(t *testing.T) {
+	Register("/cities/*", "GET", func() {
+		fmt.Println("GET /cities/*")
+	})
+	handler, ok := Route("/cities/shanghai", "GET")
+	if !ok {
+		t.Errorf("Route failed")
+	} else {
+		handler()
+	}
+}
+
+// wildcard matching has lower priority
+func TestRegister4(t *testing.T) {
+	Register("/cities/*", "GET", func() {
+		fmt.Println("GET /cities/*")
+	})
+	Register("/cities/shanghai", "GET", func() {
+		fmt.Println("GET /cities/shanghai")
+	})
+	handler, ok := Route("/cities/shanghai", "GET")
+	if !ok {
+		t.Errorf("Route failed")
+	} else {
+		handler()
+	}
+}
