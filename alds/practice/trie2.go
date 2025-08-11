@@ -1,4 +1,4 @@
-package main
+package practice
 
 import (
 	"strconv"
@@ -43,29 +43,35 @@ func parseIP(ip string) []byte {
 	return res
 }
 
+// maki:
+// taking care if we use for range mask, we are already using the index
 // get the bit value of the ip, counting from left to right
-func getBit(ip []byte, bitNum int) bool {
-	// bitNumber should -1 to be the index
-	idx := (bitNum - 1) / 8 // 0-7 comes from the first element of ip
+func getBit(ip []byte, bitIdx int) bool {
+	// group
+	// bitIdx := bitNum - 1
+	idx := bitIdx / 8
+	// shift
+	left := bitIdx - idx*8
 	part := ip[idx]
-	rightShift := 7 - bitNum%8 //
+	rightShift := 7 - left
+	// maki: taking the bit is use right shift & number 1 and compare with 1
 	return (part>>rightShift)&1 == 1
 }
 
-func mergeBit(ip []byte) int32 {
-	var val int32 = 0
-	for idx, part := range ip {
-		leftShift := 8 * (3 - idx)
-		val = val | (int32(part) << leftShift)
-	}
-	return val
-}
+// func mergeBit(ip []byte) int32 {
+// 	var val int32 = 0
+// 	for idx, part := range ip {
+// 		leftShift := 8 * (3 - idx)
+// 		val = val | (int32(part) << leftShift)
+// 	}
+// 	return val
+// }
 
-func getBitV2(ip int32, bitNumber int) bool {
-	bitIdx := bitNumber - 1
-	rightShift := 31 - bitIdx
-	return ip>>int32(rightShift)&1 == 1
-}
+// func getBitV2(ip int32, bitNumber int) bool {
+// 	bitIdx := bitNumber - 1
+// 	rightShift := 31 - bitIdx
+// 	return ip>>int32(rightShift)&1 == 1
+// }
 
 // --------build the trie tree---
 type Node struct {
@@ -92,7 +98,7 @@ func (n *Node) AddChild(bitVal bool) *Node {
 	return node
 }
 
-var root *Node = NewNode(true) // dummy node, the value not used
+var root *Node = NewNode(true) // maki: dummy node, the value not used
 
 func AddGeo(subnet string, geo string) {
 	ip, mask := parseSubnet(subnet)
@@ -115,9 +121,11 @@ func GetGeo(ip string) string {
 	for i := range 32 {
 		bitVal := getBit(ipInBits, i)
 		child := node.FindChild(bitVal)
+		// maki: stop when the child cannot be found
 		if child == nil {
 			break
 		}
+		// maki: replace only when the value is not empty
 		if child.Geo != "" {
 			geo = child.Geo
 		}

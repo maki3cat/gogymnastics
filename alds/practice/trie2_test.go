@@ -1,4 +1,4 @@
-package main
+package practice
 
 import "testing"
 
@@ -44,5 +44,3 @@ func TestSetGeoAndGetGeo(t *testing.T) {
 		}
 	}
 }
-
-
