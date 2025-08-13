@@ -117,3 +117,50 @@ func TestRouter(t *testing.T) {
 		}
 	}
 }
+
+func TestPriority(t *testing.T) {
+	router := NewRouter()
+
+	router.RegisterFunc("/*", func(_ string) string {
+		return "wildcard-1"
+	})
+	router.RegisterFunc("/user/*", func(_ string) string {
+		return "wildcard-2"
+	})
+
+	router.RegisterFunc("/user/{id}/*", func(id string) string {
+		return "pattern-wildcard-" + id
+	})
+
+	router.RegisterFunc("/user/123", func(_ string) string {
+		return "exact"
+	})
+
+	router.RegisterFunc("/user/123/special", func(_ string) string {
+		return "exact-long"
+	})
+
+	tests := []struct {
+		path     string
+		expected string
+	}{
+		{"/account", "wildcard-1"},
+		{"/user/account", "wildcard-2"},
+		{"/user/455/special", "pattern-wildcard-455"},
+		{"/user/123", "exact"},
+		{"/user/123/special", "exact-long"},
+		{"/user/123/miao", "pattern-wildcard-123"},
+	}
+
+	for _, tt := range tests {
+		param, handler := router.findHandler(tt.path)
+		var got string
+		if handler != nil {
+			got = (*handler)(param)
+		}
+
+		if got != tt.expected {
+			t.Errorf("path=%q: expected %q, got %q", tt.path, tt.expected, got)
+		}
+	}
+}

@@ -89,50 +89,43 @@ func (r *Router) findHandler(path string) (param string, handler *Handler) {
 	node := r.dummyRoot
 	param = ""
 	handler = nil
-	for _, part := range parts {
-
-		// maki: feature1b: extract the actual parameter
-		// feature2-a: digit doesn't match wildchild
+	// maki: if at one step, multiple child can be the next destination of searching,
+	// maki: it will be hard to use iteration, change to recursion and starting from highest priority
+	var findHander func(*Node, []string, int) *Handler
+	findHander = func(node *Node, parts []string, idx int) *Handler {
+		var handler *Handler
+		if idx == len(parts) {
+			return node.handler
+		}
+		part := parts[idx]
+		// first precise matching
+		preciseChild := node.GetChild(part)
+		if preciseChild != nil {
+			handler = findHander(preciseChild, parts, idx+1)
+		}
+		if handler != nil {
+			return handler
+		}
+		// pattern matching
 		if isDigigt.MatchString(part) {
 			param = part
 			part = digitPlaceHolder
-			child := node.GetChild(part)
-			if child == nil {
-				// not found
-				return
+			patternChild := node.GetChild(part)
+			handler = findHander(patternChild, parts, idx+1)
+			if handler != nil {
+				return handler
+			} else {
+				param = ""
 			}
-			node = child
-			continue
 		}
-
-		// feature2-b: digit doesn't match wildchild
-		// first match wildcard *
-		// the earilier, the low priority
+		// wildcard matching
 		wildChild := node.GetWildChild()
-		if wildChild != nil && wildChild.handler != nil {
+		if wildChild != nil {
 			handler = wildChild.handler
 		}
-
-		// but we try to go with the child's
-		// go to the wildchild's if there is no real child
-		child := node.GetChild(part)
-		if child != nil {
-			// fmt.Println("current node:", node.part, "; get part:", part, "; current child:", child.part)
-			node = child
-			continue
-		} else {
-			if wildChild != nil {
-				node = wildChild
-			} else {
-				return
-			}
-		}
+		return handler
 	}
-	// if the real path contains the handler, use this one
-	// to override the wildchild handler
-	if node.handler != nil {
-		handler = node.handler
-	}
+	handler = findHander(node, parts, 0)
 	return
 }
 
