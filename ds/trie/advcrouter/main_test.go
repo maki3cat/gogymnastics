@@ -25,3 +25,44 @@ func TestPathWithParameter(t *testing.T) {
 	})
 	r.HandleRequest("/user/123/location")
 }
+
+func TestWildCardMathching(t *testing.T) {
+	r := NewRouter()
+	r.RegisterFunc("/*", func(string) string {
+		fmt.Println("wildcard matching")
+		return ""
+	})
+	r.HandleRequest("/user/123/location")
+	r.HandleRequest("/location")
+}
+
+func TestWildCardMathchingComplex(t *testing.T) {
+	r := NewRouter()
+	r.RegisterFunc("/user/*", func(string) string {
+		fmt.Println("user wildcard matching")
+		return ""
+	})
+	r.RegisterFunc("/*", func(string) string {
+		fmt.Println("general wildcard matching")
+		return ""
+	})
+	r.HandleRequest("/user/account")
+	r.HandleRequest("/location")
+}
+
+func TestWildCardMathchingComplex2(t *testing.T) {
+	r := NewRouter()
+	r.RegisterFunc("/user/*", func(string) string {
+		fmt.Println("user wildcard matching")
+		return ""
+	})
+	r.RegisterFunc("/*", func(string) string {
+		fmt.Println("general wildcard matching")
+		return ""
+	})
+	r.RegisterFunc("/user/account", func(string) string {
+		fmt.Println("precise matching")
+		return ""
+	})
+	r.HandleRequest("/user/account")
+}

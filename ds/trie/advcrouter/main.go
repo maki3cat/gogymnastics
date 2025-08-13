@@ -60,7 +60,7 @@ type Router struct {
 // todo: save the error handling for later
 func (r *Router) RegisterFunc(path string, handler Handler) {
 	path = strings.TrimSpace(path)
-	parts := strings.Split(path, "/")
+	parts := getParts(path)
 	node := r.dummyRoot
 	for _, part := range parts {
 		// maki: feature1a: accommodate formal parameter
@@ -76,16 +76,23 @@ func (r *Router) RegisterFunc(path string, handler Handler) {
 	node.handler = &handler
 }
 
+func getParts(path string) []string {
+	parts := strings.Split(path, "/")
+	tmp := strings.Join(parts, " ")
+	return strings.Fields(tmp)
+}
+
 func (r *Router) findHandler(path string) (param string, handler *Handler) {
 	path = strings.TrimSpace(path)
-	parts := strings.Split(path, "/")
+	parts := getParts(path)
+	fmt.Println("parts", parts, len(parts))
 	node := r.dummyRoot
 	param = ""
 	handler = nil
 	for _, part := range parts {
 
 		// maki: feature1b: extract the actual parameter
-		// feature2-1: digit doesn't match wildchild
+		// feature2-a: digit doesn't match wildchild
 		if isDigigt.MatchString(part) {
 			param = part
 			part = digitPlaceHolder
@@ -98,11 +105,11 @@ func (r *Router) findHandler(path string) (param string, handler *Handler) {
 			continue
 		}
 
-		// feature2-2: digit doesn't match wildchild
+		// feature2-b: digit doesn't match wildchild
 		// first match wildcard *
 		// the earilier, the low priority
 		wildChild := node.GetWildChild()
-		if wildChild.handler != nil {
+		if wildChild != nil && wildChild.handler != nil {
 			handler = wildChild.handler
 		}
 
@@ -110,6 +117,7 @@ func (r *Router) findHandler(path string) (param string, handler *Handler) {
 		// go to the wildchild's if there is no real child
 		child := node.GetChild(part)
 		if child != nil {
+			// fmt.Println("current node:", node.part, "; get part:", part, "; current child:", child.part)
 			node = child
 			continue
 		} else {
