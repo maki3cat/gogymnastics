@@ -37,6 +37,8 @@ func (n *Node) AddChild(part string) *Node {
 var matchDigitPatten = regexp.MustCompile(`^{\w+}$`)
 var isDigigt = regexp.MustCompile(`^\d+$`)
 
+const digitPlaceHolder = "#"
+
 type Handler func(string) string
 
 func NewRouter() *Router {
@@ -59,7 +61,7 @@ func (r *Router) RegisterFunc(path string, handler Handler) {
 	for _, part := range parts {
 		// maki: feature1a: accommodate formal parameter
 		if matchDigitPatten.MatchString(part) {
-			part = "#"
+			part = digitPlaceHolder
 		}
 		child := node.GetChild(part)
 		if child == nil {
@@ -80,7 +82,7 @@ func (r *Router) findHandler(path string) (param string, handler *Handler) {
 		// maki: feature1b: extract the actual parameter
 		if isDigigt.MatchString(part) {
 			param = part
-			part = "#"
+			part = digitPlaceHolder
 		}
 		child := node.GetChild(part)
 		if child == nil {
