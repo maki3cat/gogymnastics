@@ -8,7 +8,7 @@ import (
 
 // feature1: register normal url, handler (OK)
 // feature2: register url with parameters of pure digits (OK)
-// feature3: register url with wildcard but has low priority
+// feature3: register url with wildcard but has low priority (OK)
 
 type Node struct {
 	part     string
