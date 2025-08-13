@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-// feature1: register normal url, handler
-// feature2: register url with parameters of pure digits
+// feature1: register normal url, handler (OK)
+// feature2: register url with parameters of pure digits (OK)
 // feature3: register url with wildcard but has low priority
 
 type Node struct {
@@ -25,6 +25,10 @@ func NewNode(part string) *Node {
 
 func (n *Node) GetChild(part string) *Node {
 	return n.children[part]
+}
+
+func (n *Node) GetWildChild() *Node {
+	return n.children["*"]
 }
 
 // return: the node added
@@ -79,19 +83,49 @@ func (r *Router) findHandler(path string) (param string, handler *Handler) {
 	param = ""
 	handler = nil
 	for _, part := range parts {
+
 		// maki: feature1b: extract the actual parameter
+		// feature2-1: digit doesn't match wildchild
 		if isDigigt.MatchString(part) {
 			param = part
 			part = digitPlaceHolder
+			child := node.GetChild(part)
+			if child == nil {
+				// not found
+				return
+			}
+			node = child
+			continue
 		}
+
+		// feature2-2: digit doesn't match wildchild
+		// first match wildcard *
+		// the earilier, the low priority
+		wildChild := node.GetWildChild()
+		if wildChild.handler != nil {
+			handler = wildChild.handler
+		}
+
+		// but we try to go with the child's
+		// go to the wildchild's if there is no real child
 		child := node.GetChild(part)
-		if child == nil {
-			// not found
-			return param, nil
+		if child != nil {
+			node = child
+			continue
+		} else {
+			if wildChild != nil {
+				node = wildChild
+			} else {
+				return
+			}
 		}
-		node = child
 	}
-	return param, node.handler // may still be none
+	// if the real path contains the handler, use this one
+	// to override the wildchild handler
+	if node.handler != nil {
+		handler = node.handler
+	}
+	return
 }
 
 func (r *Router) HandleRequest(path string) {
